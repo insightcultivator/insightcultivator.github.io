@@ -1,5 +1,5 @@
 ---
-title: 5차시 2:탐색적 데이터 분석(EDA)- 데이터 요약
+title: 5차시 2:탐색적 데이터 분석(EDA)- 데이터 요약 및 시각화
 layout: single
 classes: wide
 categories:
@@ -9,12 +9,9 @@ tags:
 ---
 
 
-## **1. 수치형 데이터 요약**
+## **1.데이터 요약**
 
-수치형 데이터는 연속적 또는 이산적인 값을 가지며, 이를 요약하기 위해 다양한 통계량을 사용합니다. 주요 통계량은 다음과 같습니다:  
-
-### **(1) 통계량 계산**
-
+#### **(1) 수치형 데이터 요약**
 - **평균(Mean):** 데이터 값들의 합을 데이터 개수로 나눈 값. 데이터의 중심 경향을 나타냅니다.  
 - **중앙값(Median):** 데이터를 정렬했을 때 중간에 위치한 값. 이상치에 덜 민감합니다.  
 - **최빈값(Mode):** 데이터에서 가장 자주 등장하는 값.  
@@ -22,7 +19,7 @@ tags:
 - **표준편차(Standard Deviation):** 분산의 제곱근. 데이터의 퍼짐 정도를 나타냅니다.  
 - **사분위수(Quartiles):** 데이터를 4등분한 값(Q1, Q2=중앙값, Q3). 데이터의 분포를 파악하는 데 유용.
 
-<br>
+
 
 ```python
 
@@ -32,7 +29,7 @@ tags:
   df = pd.read_csv('titanic.csv')
 
   # Age 변수 요약
-  age = df['Age'].dropna()  # 결측값 제거
+  age = df['age'].dropna()  # 결측값 제거
 
   # 통계량 계산
   mean_age = age.mean()
@@ -50,16 +47,132 @@ tags:
   print(f"사분위수: {quartiles_age}")
     
 ```
-<br>
 
-### **(2) 분포 시각화**
-데이터의 분포를 시각적으로 확인하면 데이터의 형태와 특징을 더 잘 이해할 수 있습니다. 주요 시각화 도구는 다음과 같습니다:  
+#### **(2) 범주형 데이터 요약**
+ 범주형 데이터는 특정 카테고리로 분류된 데이터입니다. 이를 요약하기 위해 빈도수와 상대 빈도수를 계산.  
+- **빈도수(Frequency):** 각 카테고리가 몇 번 등장하는지 세는 값.  
+- **상대 빈도수(Relative Frequency):** 전체 데이터 대비 해당 카테고리의 비율.  
+
+
+
+```python
+# 성별 빈도수 계산
+sex_counts = df['sex'].value_counts()
+sex_relative_freq = df['sex'].value_counts(normalize=True)
+
+print("성별 빈도수:")
+print(sex_counts)
+print("\n성별 상대 빈도수:")
+print(sex_relative_freq)
+```
+
+## **2.시각화 도구**
+#### 1. Matplotlib (plt)
+
+*   **기본 구조**: Figure (전체 도화지)와 Axes (개별 그래프 영역)로 구성됩니다.
+*   **역할**: 그래프의 기본 틀을 만들고, Axes 객체를 통해 개별 그래프를 그립니다.
+
+    ```python
+    import matplotlib.pyplot as plt
+
+    # Figure 생성 (도화지 준비)
+    fig = plt.figure(figsize=(6, 4))
+
+    # Axes 생성 (스케치북 준비, 1개 행 1개 열을 가진 첫번째 subplot)
+    ax = fig.add_subplot(111)
+
+    # 그래프 그리기 (스케치북에 그림 그리기)
+    ax.plot([1, 2, 3], [4, 5, 6])
+
+    # 그래프 표시
+    plt.show()
+    ```
+
+* add_subplot() vs plt.subplots()
+  - `add_subplot()` 함수 외에 `plt.subplots()` 함수를 사용하여 Figure와 Axes 객체를 동시에 생성할 수도 있습니다. `plt.subplots()` 함수는 여러 개의 subplot을 한 번에 생성하고, 각 subplot에 대한 Axes 객체를 배열 형태로 반환합니다.
+
+    ```python
+    fig, axes = plt.subplots(2, 2) # 2행 2열의 subplot 생성
+
+    axes[0, 0].plot([1, 2, 3], [4, 5, 6]) # 첫 번째 subplot에 그래프 그리기
+    axes[0, 1].plot([1, 2, 3], [7, 8, 9]) # 두 번째 subplot에 그래프 그리기
+
+
+    plt.show()
+    ```
+
+#### 2. Pandas plot()
+
+*   **역할**: Series나 DataFrame 객체에 내장된 함수로, Matplotlib의 pyplot 함수들을 wrapping하여 더 쉽고 간결하게 그래프를 그릴 수 있습니다.
+*   **특징**:
+    *   데이터를 자동으로 x, y축에 매핑하고, 필요한 경우 데이터 변환을 수행합니다.
+    *   `kind` 매개변수로 그래프 종류를 쉽게 선택할 수 있습니다.
+    *   Matplotlib의 기능을 그대로 활용할 수 있습니다.
+*   **예시**:
+    ```python
+    import pandas as pd
+    import matplotlib.pyplot as plt
+
+    # Series 객체 생성
+    s = pd.Series([1, 2, 3, 4, 5])
+
+    # Series 객체로 선 그래프 그리기
+    s.plot(kind='line', title='Series Line Graph')
+    plt.show()
+
+    # DataFrame 객체 생성
+    df = pd.DataFrame({'A': [1, 2, 3, 4, 5],
+                       'B': [2, 4, 6, 8, 10]})
+
+    # DataFrame 객체로 선 그래프 그리기
+    df.plot(kind='line', title='DataFrame Line Graph')
+    plt.show()
+    ```
+
+#### 3. Seaborn (sns)
+
+*   **역할**: Matplotlib을 wrapping하여 더 쉽고 직관적인 인터페이스를 제공하며, 통계적인 정보를 시각적으로 표현하는 데 특화된 기능을 제공합니다.
+*   **특징**:
+    *   Matplotlib 기반으로 만들어졌기 때문에 Matplotlib의 Figure와 Axes 객체를 그대로 사용.
+    *   함수 기반 접근 방식과 Axes-level 접근 방식을 제공합니다.
+*   **예시**:
+    ```python
+    import seaborn as sns
+    import matplotlib.pyplot as plt
+
+    # 데이터 준비
+    data = {'x': [1, 2, 3, 4, 5], 'y': [2, 4, 6, 8, 10]}
+    df = pd.DataFrame(data)
+
+    # 함수 기반 접근 방식
+    sns.countplot(x='x', data=df)
+    plt.show()
+
+    # Axes-level 접근 방식
+    fig, ax = plt.subplots()
+    sns.countplot(x='x', data=df, ax=ax)
+    plt.show()
+    ```
+
+#### 4.요약
+
+| 기능 | Matplotlib (plt) | Pandas plot() | Seaborn (sns) |
+|---|---|---|---|
+| 역할 | 기본 틀 제공 | Matplotlib wrapping | Matplotlib wrapping, 통계적 시각화 |
+| 사용 | 복잡한 코드 | 간결한 코드 | 더 쉽고 직관적인 코드 |
+| 특징 | Figure, Axes 객체 사용 | 데이터 자동 처리 | 다양한 그래프 스타일 제공 |
+
+
+
+
+## **3.데이터 시각화**
+#### **(1) 수치형 데이터 시각화**
+데이터의 분포를 시각적으로 확인하면 데이터의 형태와 특징을 더 잘 이해할 수 있습니다. 주요 시각화 도구는 다음과 같습니다:
 
 - **히스토그램(Histogram):** 데이터의 빈도 분포를 막대로 표현합니다.  
 - **박스 플롯(Box Plot):** 데이터의 사분위수와 이상치를 한눈에 보여줍니다.  
 - **밀도 추정(Kernel Density Estimate, KDE):** 데이터의 확률 밀도를 부드럽게 표현합니다.  
-
-<br>
+- **산점도(Scatter Plot):** 산점도는 두 변수 간의 관계를 시각적으로 확인하는 데 유용합니다
 
 ```python
 import matplotlib.pyplot as plt
@@ -87,40 +200,24 @@ plt.title("Age Density Plot")
 plt.xlabel("Age")
 plt.ylabel("Density")
 plt.show()
+
+# 산점도 그리기
+plt.figure(figsize=(8, 6))
+sns.scatterplot(data=df, x='age', y='fare', hue='survived', alpha=0.7)
+plt.title("Scatter Plot of Age vs Fare")
+plt.xlabel("Age")
+plt.ylabel("Fare")
+plt.legend(title="Legend", loc="upper right")
+plt.show()
 ```
 
-<br>
-
-## **2. 범주형 데이터 요약**
-
-### **(1) 빈도수 및 비율 계산**
- 범주형 데이터는 특정 카테고리로 분류된 데이터입니다. 이를 요약하기 위해 빈도수와 상대 빈도수를 계산.  
-- **빈도수(Frequency):** 각 카테고리가 몇 번 등장하는지 세는 값.  
-- **상대 빈도수(Relative Frequency):** 전체 데이터 대비 해당 카테고리의 비율.  
-
-<br>
-
-```python
-# 성별 빈도수 계산
-sex_counts = df['Sex'].value_counts()
-sex_relative_freq = df['Sex'].value_counts(normalize=True)
-
-print("성별 빈도수:")
-print(sex_counts)
-print("\n성별 상대 빈도수:")
-print(sex_relative_freq)
-```
-
-<br>
-
-
-### **(2) 시각화(파이 차트, 막대 그래프)**
+#### **(2) 범주형 데이터 시각화**
 범주형 데이터의 비율을 시각적으로 표현하기 위해 파이 차트와 막대 그래프를 사용합니다.  
 
 - **파이 차트(Pie Chart):** 각 카테고리의 비율을 원형으로 표현합니다.  
 - **막대 그래프(Bar Chart):** 각 카테고리의 빈도수를 막대로 표현합니다.  
 
-<br>
+
 
 ```python
 # 파이 차트
@@ -132,17 +229,9 @@ plt.show()
 
 # 막대 그래프
 plt.figure(figsize=(6, 4))
-sns.countplot(x='Sex', data=df)
+sns.countplot(x='sex', data=df)
 plt.title("Sex Distribution (Bar Chart)")
 plt.xlabel("Sex")
 plt.ylabel("Count")
 plt.show()
 ```
-
-<br>
-
-
-
-## **3. GenAI 활용:**  
-   - AI 도구를 활용해 데이터 요약 리포트를 자동으로 생성하는 시연을 보여줍니다.  
-   - 예: "이 데이터셋의 주요 통계량과 시각화를 요약해줘"라고 요청하면, AI가 기본적인 요약 결과를 제공합니다.  
