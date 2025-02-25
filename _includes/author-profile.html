@@ -244,3 +244,11 @@
     </ul>
   </div>
 </div>
+
+{% if author.additional_image %}
+  <li>
+    <div class="author__additional-image">
+      <img src="{{ author.additional_image | relative_url }}" alt="Additional Image">
+    </div>
+  </li>
+{% endif %}

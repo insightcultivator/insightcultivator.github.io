@@ -347,3 +347,13 @@
     margin-inline-end: initial;
   }
 }
+
+.author__additional-image {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  
+  img {
+    max-width: 90%;
+    border-radius: 20px;  // 필요시 테두리 둥글게
+  }
+}

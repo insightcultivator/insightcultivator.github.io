@@ -118,6 +118,7 @@ author:
   avatar           : "/assets/images/avatar.jpg" # path of avatar image, e.g. "/assets/images/bio-photo.jpg"
   bio              : "I am a BigData Seek"
   location         : "KOREA"  
+  additional_image: "/assets/images/feynman_technique_img.png" 
   email            : 
   links:
     - label: "GitHub"
