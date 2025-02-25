@@ -3,7 +3,7 @@ title: 8차시 4:머신러닝(비지도학습 및 강화학습)
 layout: single
 classes: wide
 categories:
-  - 데이터 시각화
+  - 머신러닝
 tags:
   - 비지도학습
 toc: true # 이 포스트에서 목차를 활성화
