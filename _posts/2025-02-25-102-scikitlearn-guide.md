@@ -1,5 +1,5 @@
 ---
-title: 8차시 2:데이터 시각화(Scikit-Learn Guide) 
+title: 8차시 2:머신 러닝(Scikit-Learn Guide) 
 layout: single
 classes: wide
 categories:

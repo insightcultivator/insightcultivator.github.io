@@ -1,5 +1,5 @@
 ---
-title: 8차시 1:데이터 시각화(Machin Learning 기초) 
+title: 8차시 1:머신 러닝(Machin Learning 기초) 
 layout: single
 classes: wide
 categories:
