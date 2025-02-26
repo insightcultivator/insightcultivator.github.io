@@ -15,6 +15,3 @@ tags:
 
 ![Unsplash image 10]({{ site.url }}{{ site.baseurl }}/assets/images/course-outline.jpg)
 
-![Feynman Technique](/assets/images/feynman_technique_img.png)
---- 
-

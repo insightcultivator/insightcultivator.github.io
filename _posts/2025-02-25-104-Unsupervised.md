@@ -62,7 +62,7 @@ from scipy.cluster.hierarchy import dendrogram, linkage
 X = [[1, 2], [1.5, 1.8], [5, 8], [8, 8], [1, 0.6], [9, 11]]
 
 # 계층적 클러스터링
-model = AgglomerativeClustering(n_clusters=2, affinity='euclidean', linkage='ward')
+model = AgglomerativeClustering(n_clusters=2, metric='euclidean', linkage='ward')
 labels = model.fit_predict(X)
 
 # 덴드로그램 시각화
