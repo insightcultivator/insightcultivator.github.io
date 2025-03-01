@@ -270,7 +270,7 @@ plugins:
   - jekyll-gist
   - jekyll-feed
   - jekyll-include-cache
-
+  - jekyll-csv
 # mimic GitHub Pages with --safe
 whitelist:
   - jekyll-paginate
