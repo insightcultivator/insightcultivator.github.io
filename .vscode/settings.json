@@ -11,8 +11,8 @@
             "driver": "MySQL",
             "name": "exer_mysql",
             "username": "root",
-            "database": "SchoolDB",
-            "password": ""
+            "database": "school",
+            "askForPassword": true
         }
     ]
 }

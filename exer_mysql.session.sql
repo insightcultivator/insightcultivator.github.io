@@ -401,5 +401,493 @@ SELECT * FROM Enrollments;
   JOIN Courses c ON e.CourseID = c.CourseID;
 
   -- 뷰 조회
+
+  SELECT * FROM Courses;
+
+--   7.7 Unique Constraints
+-- 열의 값이 중복되지 않도록 제약 조건을 설정
+ALTER TABLE Courses ADD CONSTRAINT UniqueCourseName UNIQUE (CourseName);
+
+INSERT INTO Courses (CourseID, CourseName, Credits)
+VALUES (103, 'Physics', 4);
+
+-- 7.8 Indexes
+-- 데이터 검색 속도를 향상시키기 위한 인덱스를 생성
+-- Students 테이블의 Name열에 인덱스 생성
+
+EXPLAIN SELECT * FROM Students WHERE Name = 'Alice';
+CREATE INDEX idx_student_name On Students(Name);
+EXPLAIN SELECT * FROM Students WHERE Name = 'Alice';
+
+-- 8. 사용자 및 권한
+-- 환경 설정 및 데이터 준비
+CREATE DATABASE IF NOT EXISTS school;
+USE school;
+
+CREATE TABLE students(
+    student_id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(50) NOT NULL,
+    grade INT NOT NULL
+);
+
+-- 샘플 데이터 삽입
+INSERT INTO students (name, grade) VALUES
+('Alice', 1),
+('Bob',2),
+('Charlie',3);
+
+SELECT * FROM students;
+
+
+-- 8.1 CREATE USER문
+-- 새로운 사용자를 생성합니다. 
+CREATE USER 'teacher'@'localhost' IDENTIFIED BY 'password123';
+
+-- 8.2 Grant/Revoke Privileges
+-- 사용자에게 특정 권한을 부여하거나 취소
+-- teacher사용자에게 students 테이블에 대한 SELECT 권한 부여
+GRANT SELECT ON school.students TO 'teacher'@'localhost';
+
+-- teacher 사용자에게 INSERT 권한 추가 부여
+GRANT INSERT ON school.students TO 'teacher'@'localhost';
+
+-- 8.3 Show grants for user in MySQL
+-- 특정 사용자의 현재 권한을 확인합니다.
+-- teacher 사용자의 권한 확인
+SHOW GRANTS FOR 'teacher'@'localhost';
+
+-- teacher 사용자의 이름을 instructor로 변경
+RENAME USER 'teacher'@'localhost' TO 'instructor'@'localhost';
+
+-- 8.6 DROP USER문
+-- 사용자를 삭제
+DROP USER 'instructor'@'localhost';
+
+-- 8.7 Find users logged into MySql
+-- 현재 접속한 사용자 목록 확인
+SELECT USER(), CURRENT_USER();
+SHOW PROCESSLIST;
+
+-- 실습 후 정리
+DROP USER IF EXISTS 'teacher'@'localhost';
+DROP USER IF EXISTS 'instructor'@'localhost';
+DROP DATABASE IF EXISTS school;
+
+
+-- 9. 프로그래밍 요소
+USE SchoolDB;
+
+
+CREATE TABLE students (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    age INT NOT NULL,
+    enrollment_date DATE NOT NULL
+);
+
+INSERT INTO students(name, age, enrollment_date) VALUES
+('Alice', 20, '2024-01-15'),
+('Bob', 22, '2023-09-01'),
+('Charlie', 21, '2022-06-20');
+
+SELECT * FROM students;
+
+-- 9.1 Comments within SQL
+SELECT * FROM students;
+
+/* 여러 줄 예제
+특정 학생 정보를 가져오는 쿼리입니다. */
+SELECT * FROM students WHERE name = 'Alice';
+
+-- 9.2 Literals
+-- 문자열, 숫자, 날짜 등의 고정된 값을 표현하는 데이터
+SELECT 'HELLO, SQL!' AS text_literal;
+SELECT 123 AS number_literal;
+SELECT '2025-01-01' AS date_literal;
+
+-- 9.3 Declaring Variables
+-- SQL 내에서 값을 저장하고 활용하기 위해 변수를 선언하고 할당
+-- MySQL에서는 SET을 사용하여 변수를 선언하고 값을 할당
+SET @student_name = 'David';
+SET @student_age = 23;
+
+SELECT @student_name AS name, @student_age AS age;
+
+-- 9.4 Sequences(AUTO_INCREMENT)
+-- 테이블의 기본키 값을 자동으로 증가
+INSERT INTO students (name, age, enrollment_date) VALUES
+('David', 23, '2024-02-01');
+
+-- 마지막 삽입된 ID 확인
+SELECT LAST_INSERT_ID();
+
+-- 9.5 DELIMTER와 BEGIN..END
+-- 저장 프로시저나 함수, 트리거 작성시 사용
+-- DELIMITER는 이 구분자를 임시로 변경하는 것
+-- BEGIN..END는 여러개의 SQL 문장을 하나의 블록으로 묶어서 실행
+DROP PROCEDURE IF EXISTS AddNumbers;
+DROP FUNCTION IF EXISTS GetStudentAge;
+DROP FUNCTION IF EXISTS GetStudentGrdade;
+
+-- SQLTools에서 DELIMITER 에러 발생, WorkBench에서 작업해야
+-- SQLTools에서 Procedure, Funtions, Trigger가 UI에 표시안됨. 확인은 가능
+
+DELIMITER $$
+CREATE PROCEDURE AddNumbers(IN num1 INT, IN num2 INT, OUT result INT)
+BEGIN
+    SET result = num1 + num2;
+END $$
+DELIMITER ;
+
+
+SET @num1 = 10;
+SET @num2 = 20;
+SET @result = 0;
+
+-- 저장 프로시저 호출
+CALL AddNumbers(@num1, @num2, @result);
+
+SELECT @result AS Result;
+
+
+-- procedure 및 Funtions 확인 코드
+SELECT ROUTINE_NAME, ROUTINE_TYPE 
+FROM INFORMATION_SCHEMA.ROUTINES 
+WHERE ROUTINE_SCHEMA = 'school';
+
+-- 9.6 Furntions
+-- 실습할 테이블 생성
+CREATE TABLE products (
+        id INT PRIMARY KEY AUTO_INCREMENT,
+        name VARCHAR(255) NOT NULL,
+        price DECIMAL(10, 2) NOT NULL,
+        category VARCHAR(50)
+    );
+
+INSERT INTO products (name, price, category) VALUES
+('노트북', 1200.00, '전자제품'),
+('마우스', 30.00, '전자제품'),
+('셔츠', 50.00, '의류'),
+('바지', 70.00, '의류'),
+('책', 20.00, '도서');
+
+SELECT * FROM products;
+
+-- 사용자 정의 함수
+DELIMITER //
+
+CREATE FUNCTION calculate_discounted_price(price DECIMAL(10, 2), discount_rate DECIMAL(3, 2))
+RETURNS DECIMAL(10, 2)
+DETERMINISTIC
+BEGIN
+    DECLARE discounted_price DECIMAL(10, 2);
+    SET discounted_price = price * (1 - discount_rate);
+    RETURN discounted_price;
+END //
+
+DELIMITER ;
+
+-- 생성된 ROUTINE 확인
+SELECT ROUTINE_NAME, ROUTINE_TYPE 
+FROM INFORMATION_SCHEMA.ROUTINES 
+WHERE ROUTINE_SCHEMA = 'school';
+
+
+-- 함수 호출 예제
+SELECT name, price, calculate_discounted_price(price, 0.1) AS discounted_price
+FROM products;
+
+-- 9.7 프로시저
+
+-- students 테이블 생성
+CREATE TABLE IF NOT EXISTS students (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    age INT,
+    grade VARCHAR(50)
+);
+
+-- 샘플 데이터 삽입
+INSERT INTO students (name, age, grade) VALUES
+('김철수', 18, 'A'),
+('박영희', 19, 'B'),
+('이민수', 18, 'A'),
+('정수진', 20, 'C'),
+('최지훈', 19, 'B');
+
+-- 특정 학년 학생 정보 조회 프로시저
+DELIMITER //
+
+CREATE PROCEDURE GetStudentsByGrade(IN grade_to_find VARCHAR(50))
+BEGIN
+    SELECT * FROM students WHERE grade = grade_to_find;
+END //
+
+DELIMITER ;
+
+-- 프로시저 실행
+CALL GetStudentsByGrade('B');
+
+-- 9.8 IF-THEN-ELSEIF-ELSE-END 문
+-- 샘플 테이블 생성
+  CREATE TABLE IF NOT EXISTS scores (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      student_name VARCHAR(255) NOT NULL,
+      score INT
+  );
+
+  INSERT INTO scores (student_name, score) VALUES
+  ('김철수', 85),
+  ('박영희', 92),
+  ('이민수', 78),
+  ('정수진', 65),
+  ('최지훈', 50);
   
-  SELECT * FROM StudentCourseView;
+--   점수에 따라 학점을 부여하는 AssignGrade 프로시저 생성
+  DELIMITER //
+
+  CREATE PROCEDURE AssignGrade(IN student_id INT)
+  BEGIN
+      DECLARE student_score INT;
+      DECLARE student_grade VARCHAR(2);
+
+      -- 학생 점수 조회
+      SELECT score INTO student_score FROM scores WHERE id = student_id;
+
+      -- 학점 부여
+      IF student_score >= 90 THEN
+          SET student_grade = 'A';
+      ELSEIF student_score >= 80 THEN
+          SET student_grade = 'B';
+      ELSEIF student_score >= 70 THEN
+          SET student_grade = 'C';
+      ELSEIF student_score >= 60 THEN
+          SET student_grade = 'D';
+      ELSE
+          SET student_grade = 'F';
+      END IF;
+
+      -- 결과 출력
+      SELECT student_name, student_score, student_grade FROM scores WHERE id = student_id;
+  END //
+
+  DELIMITER ;
+
+
+-- 생성된 ROUTINE 확인
+SELECT ROUTINE_NAME, ROUTINE_TYPE 
+FROM INFORMATION_SCHEMA.ROUTINES 
+WHERE ROUTINE_SCHEMA = 'school';
+
+  -- 실행 예제
+  CALL AssignGrade(1); 
+
+--   9.9 WHILE 문
+  DELIMITER //
+
+  CREATE PROCEDURE PrintNumbers()
+  BEGIN
+      DECLARE counter INT DEFAULT 1;
+
+      WHILE counter <= 5 DO
+          SELECT counter AS number;
+          SET counter = counter + 1;
+      END WHILE;
+  END //
+
+  DELIMITER ;
+
+  -- 실행 예제
+  CALL PrintNumbers();
+
+--  9.10 LEAVE 문
+  DELIMITER //
+
+  CREATE PROCEDURE TestLeave()
+  BEGIN
+      DECLARE counter INT DEFAULT 1;
+        
+      test_loop: LOOP
+          IF counter > 3 THEN
+              LEAVE test_loop;
+          END IF;
+          SELECT counter AS number;
+          SET counter = counter + 1;
+      END LOOP;
+  END //
+
+  DELIMITER ;
+
+  -- 실행 예제
+  CALL TestLeave();
+
+--   9.11 ITERATE문(특정 부분 건너뛰기)
+  DELIMITER //
+
+  CREATE PROCEDURE TestIterate()
+  BEGIN
+      DECLARE counter INT DEFAULT 0;
+        
+      test_loop: LOOP
+          SET counter = counter + 1;
+            
+          IF counter = 2 THEN
+              ITERATE test_loop; -- 2일 때는 출력하지 않고 다음 반복으로 이동
+          END IF;
+
+          SELECT counter AS number;
+            
+          IF counter >= 5 THEN
+              LEAVE test_loop;
+          END IF;
+      END LOOP;
+  END //
+
+  DELIMITER ;
+
+  -- 실행 예제
+  CALL TestIterate();
+
+--   9.12 RETURN문
+  DELIMITER //
+
+  CREATE FUNCTION GetTotalStudents() RETURNS INT DETERMINISTIC
+  BEGIN
+      DECLARE total INT;
+      SELECT COUNT(*) INTO total FROM students;
+      RETURN total;
+  END //
+
+  DELIMITER ;
+
+  -- 실행 예제
+  SELECT GetTotalStudents() AS Total_Students;
+
+--   9.13 LOOP문
+
+SELECT ROUTINE_NAME, ROUTINE_TYPE
+FROM INFORMATION_SCHEMA.ROUTINES
+WHERE ROUTINE_SCHEMA = 'school';
+
+  DELIMITER //
+
+  CREATE PROCEDURE TestLoop()
+  BEGIN
+      DECLARE counter INT DEFAULT 1;
+        
+      simple_loop: LOOP
+          SELECT counter AS number;
+          SET counter = counter + 1;
+          IF counter > 3 THEN
+              LEAVE simple_loop;
+          END IF;
+      END LOOP;
+  END //
+
+  DELIMITER ;
+
+  -- 실행 예제
+  CALL TestLoop();
+
+--   9.14 REPEAT 문
+  DELIMITER //
+
+  CREATE PROCEDURE TestRepeat()
+  BEGIN
+      DECLARE counter INT DEFAULT 1;
+        
+      REPEAT
+          SELECT counter AS number;
+          SET counter = counter + 1;
+      UNTIL counter > 3 END REPEAT;
+  END //
+
+  DELIMITER ;
+
+  -- 실행 예제
+  CALL TestRepeat();
+
+--   9.15 CASE문
+ UPDATE students SET age = 28 WHERE id = 1;
+ UPDATE students SET age = 25 WHERE id = 5;
+  SELECT name, 
+      age,
+      CASE 
+          WHEN age < 21 THEN '미성년자'
+          WHEN age BETWEEN 21 AND 25 THEN '청년'
+          ELSE '성인'
+      END AS category
+  FROM students;
+
+
+
+CREATE DATABASE IF NOT EXISTS SchoolDB;
+USE SchoolDB;
+
+CREATE TABLE Students (
+    student_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50),
+    age INT,
+    grade CHAR(1)
+);
+
+INSERT INTO Students (name, age, grade) VALUES 
+('Alice', 14, 'A'),
+('Bob', 15, 'B'),
+('Charlie', 16, 'A'),
+('David', 14, 'C'),
+('Eve', 15, 'B');
+
+
+--   9.16 Cursor 선언 및 핸들링
+-- SQL에서 여러 행을 하나씩 처리할 수 있도록 커서를 선언
+-- 커서 선언 (학생 정보를 조회하는 쿼리)
+DECLARE studentCursor CURSOR FOR 
+SELECT name, grade FROM Students;
+-- 전체 코드는 밑에 있음
+
+USE schoolDB;
+
+
+
+
+
+
+DELIMITER $$
+
+CREATE PROCEDURE FetchStudents()
+BEGIN
+    DECLARE done INT DEFAULT FALSE;  -- NOT FOUND 핸들러용 변수
+    DECLARE studentName VARCHAR(50); -- 학생 이름 저장 변수
+    DECLARE studentGrade CHAR(1);    -- 학생 등급 저장 변수
+    
+    -- 커서 선언 (학생 정보를 조회하는 쿼리)
+    DECLARE studentCursor CURSOR FOR 
+    SELECT name, grade FROM Students;
+    
+    -- NOT FOUND 상황 처리 핸들러
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+    -- 커서 열기
+    OPEN studentCursor;
+
+    -- 반복문으로 한 행씩 데이터 가져오기
+    read_loop: LOOP
+        FETCH studentCursor INTO studentName, studentGrade;
+
+        IF done THEN
+            LEAVE read_loop;
+        END IF;
+
+        -- 가져온 데이터 출력
+        SELECT CONCAT('학생: ', studentName, ', 등급: ', studentGrade) AS Student_Info;
+    END LOOP;
+
+    -- 커서 닫기
+    CLOSE studentCursor;
+END $$
+
+DELIMITER ;
+
+-- 실습 실행방법
+  CALL FetchStudents();
