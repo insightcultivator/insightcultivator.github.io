@@ -891,3 +891,174 @@ DELIMITER ;
 
 -- 실습 실행방법
   CALL FetchStudents();
+
+--  10. 트리거
+
+-- 실습용 데이터베이스 생성
+CREATE DATABASE trigger_demo;
+USE trigger_demo;
+
+-- 2. 학생 정보 테이블 생성
+CREATE TABLE students (
+    student_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50),
+    age INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- 3. 로그 테이블 생성 (트리거 실행 결과를 기록)
+CREATE TABLE log_table (
+    log_id INT AUTO_INCREMENT PRIMARY KEY,
+    action_type VARCHAR(50),
+    description TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 10.1 BEFORE INSERT TRIGGER
+-- `students` 테이블에 데이터를 삽입하기 전에, 나이가 0 이하이면 18로 변경하는 트리거를 생성합니다.
+DELIMITER $$
+
+CREATE TRIGGER before_insert_students
+BEFORE INSERT ON students
+FOR EACH ROW
+BEGIN
+    IF NEW.age <= 0 THEN
+        SET NEW.age = 18;
+    END IF;
+END $$
+
+DELIMITER ;
+
+
+SELECT ROUTINE_NAME, ROUTINE_TYPE
+FROM INFORMATION_SCHEMA.ROUTINES
+WHERE ROUTINE_SCHEMA = 'trigger_demo';
+
+  -- 나이가 0인 학생 추가
+  INSERT INTO students (name, age) VALUES ('Alice', 0);
+  -- 결과: 트리거 실행 후, age 값이 18로 자동 변경됨
+
+  -- 결과 확인
+  SELECT * FROM students;
+  DROP TABLE students;
+  SELECT DATABASE();
+  show TABLEs;
+  SHOW tables;
+
+--   10.2 AFTER INSERT 트리거
+-- 학생이 추가된 후, log_table에 삽입 정보를 기록하는 트리거를 생성
+DELIMITER $$
+
+CREATE TRIGGER after_insert_students
+AFTER INSERT ON students
+FOR EACH ROW
+BEGIN
+    INSERT INTO log_table (action_type, description)
+    VALUES ('INSERT', CONCAT('New student added: ', NEW.name, ', Age: ', NEW.age));
+END $$
+
+DELIMITER ;
+
+  -- 학생 추가
+  INSERT INTO students (name, age) VALUES ('Bob', 22);
+
+  -- 로그 확인
+  SELECT * FROM log_table;
+
+--   10.3 BEFORE UPDATE 트리거
+-- 학생 정보가 업데이트되기 전에, 이전 나이를 log_table에 기록하는 트리거를 생성
+
+DELIMITER $$
+
+CREATE TRIGGER before_update_students
+BEFORE UPDATE ON students
+FOR EACH ROW
+BEGIN
+    INSERT INTO log_table (action_type, description)
+    VALUES ('BEFORE UPDATE', CONCAT('Updating student ', OLD.name, ': Age ', OLD.age, ' -> ', NEW.age));
+END $$
+
+DELIMITER ;
+
+  -- 학생 나이 변경
+  UPDATE students SET age = 25 WHERE student_id = 2;
+
+  -- 로그 확인
+  SELECT * FROM log_table;
+
+--   10.4 AFTER UPDATE 트리거
+-- 학생 정보가 업데이트된 후, 변경된 정보를 log_table에 기록하는 트리거를 생성
+DELIMITER $$
+
+CREATE TRIGGER after_update_students
+AFTER UPDATE ON students
+FOR EACH ROW
+BEGIN
+    INSERT INTO log_table (action_type, description)
+    VALUES ('AFTER UPDATE', CONCAT('Updated student ', NEW.name, ': New Age ', NEW.age));
+END $$
+
+DELIMITER ;
+
+  -- 학생 나이 변경
+  UPDATE students SET age = 30 WHERE student_id = 2;
+
+  -- 로그 확인
+  SELECT * FROM log_table;
+
+--   10.5 BEFORE DELETE 트리거
+-- 학생 정보가 삭제되기 전에, 삭제될 학생 정보를 log_table에 기록하는 트리거를 생성
+DELIMITER $$
+
+CREATE TRIGGER before_delete_students
+BEFORE DELETE ON students
+FOR EACH ROW
+BEGIN
+    INSERT INTO log_table (action_type, description)
+    VALUES ('BEFORE DELETE', CONCAT('Deleting student: ', OLD.name, ', Age: ', OLD.age));
+END $$
+
+DELIMITER ;
+
+  -- 학생 삭제
+  DELETE FROM students WHERE student_id = 2;
+
+  -- 로그 확인
+  SELECT * FROM log_table;
+
+--   10.6 AFTER DELETE 트리거
+-- 학생 정보가 삭제된 후, 삭제가 완료되었음을 log_table에 기록하는 트리거
+
+DELIMITER $$
+
+CREATE TRIGGER after_delete_students
+AFTER DELETE ON students
+FOR EACH ROW
+BEGIN
+    INSERT INTO log_table (action_type, description)
+    VALUES ('AFTER DELETE', CONCAT('Deleted student: ', OLD.name));
+END $$
+
+DELIMITER ;
+
+  -- 학생 삭제
+  DELETE FROM students WHERE student_id = 1;
+
+  -- 로그 확인
+  SELECT * FROM log_table;
+
+--   10.7 DROP TRIGGER
+-- 기존의 특정 트리거를 삭제할 때 사용
+-- 트리거 삭제 예제
+DROP TRIGGER IF EXISTS before_insert_students;
+DROP TRIGGER IF EXISTS after_insert_students;
+DROP TRIGGER IF EXISTS before_update_students;
+DROP TRIGGER IF EXISTS after_update_students;
+DROP TRIGGER IF EXISTS before_delete_students;
+DROP TRIGGER IF EXISTS after_delete_students;
+
+
+SELECT TRIGGER_NAME
+FROM INFORMATION_SCHEMA.TRIGGERS
+WHERE TRIGGER_SCHEMA = 'trigger_demo';
