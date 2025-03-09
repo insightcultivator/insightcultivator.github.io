@@ -9,7 +9,7 @@ toc_sticky: true # 목차를 고정할지 여부 (선택 사항)
 ---
 
 ## 1. 샘플 프로젝트
-### 1.1 프로젝트 구조 (업데이트)
+### 1.1 프로젝트 구조 
 ```
 flask_app/
 │
@@ -23,7 +23,7 @@ flask_app/
 ```
 
 
-### 1.2 `app.py` (Flask 애플리케이션 업데이트)
+### 1.2 `app.py` 
 ```python
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 import sqlite3
@@ -182,7 +182,7 @@ if __name__ == "__main__":
 ```
 
 
-### 1.4 `templates/login.html` 
+### 1.4 `templates/login.html` (로그인 페이지)
 ```html
 <!DOCTYPE html>
 <html lang="ko">
@@ -220,7 +220,7 @@ if __name__ == "__main__":
 
 ```
 
-### 1.5 `templates/main.html` 메인 페이지
+### 1.5 `templates/main.html` (메인 페이지)
 ```html
 <!DOCTYPE html>
 <html lang="ko">
@@ -389,7 +389,6 @@ button:hover {
 - 무료 계정으로도 Flask 애플리케이션을 배포할 수 있지만, 제한된 리소스와 기능을 제공합니다.
 
 ### **2.2 로컬 환경에서 Flask 애플리케이션 준비**
-
 - 필요한 파일:
     - `app.py`: 메인 Flask 애플리케이션 파일.
     - `requirements.txt`: 프로젝트의 의존성 목록을 포함한 파일.
@@ -399,7 +398,7 @@ button:hover {
     ```
 
 ### **2.3 Git 저장소에 코드 업로드**
-PythonAnywhere에서는 Git을 통해 코드를 가져올 수 있습니다. 따라서 GitHub 또는 다른 Git 호스팅 서비스에 코드를 업로드해야 합니다.
+- PythonAnywhere에서는 Git을 통해 코드를 가져올 수 있습니다. 따라서 GitHub 또는 다른 Git 호스팅 서비스에 코드를 업로드해야 합니다.
 
 1. Git 저장소 초기화:
    ```bash
@@ -415,10 +414,8 @@ PythonAnywhere에서는 Git을 통해 코드를 가져올 수 있습니다. 따�
    git push -u origin main
    ```
 
-
-
 ### **2.4 PythonAnywhere Bash 콘솔에서 작업**
-PythonAnywhere 대시보드에서 Bash 콘솔을 열고 다음 명령어를 실행합니다.
+- PythonAnywhere 대시보드에서 Bash 콘솔을 열고 다음 명령어를 실행합니다.
 
 - Git 클론 혹은 파일 업로드
     - GitHub 저장소를 PythonAnywhere에 복제합니다:
@@ -452,6 +449,7 @@ PythonAnywhere 대시보드에서 Bash 콘솔을 열고 다음 명령어를 실�
 
 
 ### **2.5 애플리케이션 실행 및 테스트**
+- 파이썬 웹 애플리케이션의 HTTP 요청은 아래와 같이 제공
 ![http_request](/assets/images/http_request.jpg)
 
 #### 1. PythonAnywhere의 웹 서버 구성
