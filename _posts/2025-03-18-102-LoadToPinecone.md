@@ -1,5 +1,5 @@
 ---
-title: 15차시 1:n8n (Load To PineCone)
+title: 15차시 3:n8n (Load To PineCone)
 layout: single
 classes: wide
 categories:
