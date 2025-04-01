@@ -26,3 +26,30 @@
     <script src="{{ script | relative_url }}"></script>
   {% endfor %}
 {% endif %}
+
+<!-- Mermaid support -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: 'dark'
+    });
+    
+    // Find all elements with class 'language-mermaid'
+    setTimeout(function() {
+      document.querySelectorAll('pre code.language-mermaid').forEach(function(element) {
+        // Create a div with class 'mermaid'
+        var mermaidDiv = document.createElement('div');
+        mermaidDiv.className = 'mermaid';
+        mermaidDiv.innerHTML = element.textContent;
+        
+        // Replace the <pre><code> with the div
+        var pre = element.parentElement;
+        pre.parentElement.replaceChild(mermaidDiv, pre);
+      });
+      
+      mermaid.init(undefined, document.querySelectorAll('.mermaid'));
+    }, 500);
+  });
+</script>
