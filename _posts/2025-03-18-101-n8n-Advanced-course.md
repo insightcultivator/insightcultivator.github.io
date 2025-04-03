@@ -103,7 +103,16 @@ toc_sticky: true # 목차를 고정할지 여부 (선택 사항)
         "userId": 1
       }
       ```
-
+    - 테스트 사이트이므로 실제로 값이 추가되진 않고, 요청에 대해 단순히 시뮬레이션만 보여준다.
+      - 가짜 응답
+      ```
+      {
+        "id": 101,
+        "title": "foo",
+        "body": "bar",
+        "userId": 1
+      }
+      ```
   - **Advanced Options**:  
     - 헤더(Header), 본문(Body), 쿼리 파라미터(Query Parameters) 등을 설정할 수 있습니다.  
 
