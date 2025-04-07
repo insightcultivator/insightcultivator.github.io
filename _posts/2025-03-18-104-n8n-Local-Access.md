@@ -11,7 +11,7 @@ toc_sticky: true # 목차를 고정할지 여부 (선택 사항)
 
 # ngrok설치하여: 외부서비스에서 로컬호스트(localhost)에 접근하기
 
-## 1. 설치 방법
+## 1. 설치 방법(다음 방법 중 하나를 선택)
 
 1. 직접 다운로드 방식
     - [ngrok 공식 웹사이트](https://ngrok.com/download)에서 Windows용 ZIP 파일을 다운로드합니다.
