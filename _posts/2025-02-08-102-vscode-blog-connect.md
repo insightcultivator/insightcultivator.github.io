@@ -1,5 +1,5 @@
 ---
-title: 1차시 5:VScode에서 Blog 수정하기
+title: 0차시:VScode에서 Blog 수정하기
 layout: single
 classes: wide
 permalink: /vscode-blog-connect/

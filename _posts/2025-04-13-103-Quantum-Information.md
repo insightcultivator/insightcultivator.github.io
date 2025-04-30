@@ -1,5 +1,5 @@
 ---
-title: 29차시 3:Quantum Information
+title: 1차시 3:Quantum Information
 layout: single
 classes: wide
 categories:
