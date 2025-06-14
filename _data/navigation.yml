@@ -2,14 +2,17 @@
 main:
 #   - title: "Quick-Start Guide"
 #     url: https://mmistakes.github.io/minimal-mistakes/docs/quick-start-guide/
-  - title: "About Me"
-    url: /about/
-  - title: "Learnig Projects"
-    url: /learning-project/
-  - title: "My Projects"
-    url: /my-project/
-  - title: "Categories & Tags"
-    url: /categories/
+
+#아래 내용은 Main화면에서 별개 페이지로 이동 
+
+  # - title: "About Me"
+  #   url: /about/
+  # - title: "Learnig Projects"
+  #   url: /learning-project/
+  # - title: "My Projects"
+  #   url: /my-project/
+  # - title: "Categories & Tags"
+  #   url: /categories/
 
   
   # - title: "Sitemap"
