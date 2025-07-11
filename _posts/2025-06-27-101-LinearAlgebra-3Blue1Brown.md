@@ -1,5 +1,5 @@
 ---
-title: 2차시 1:Linear Algebra(3Blue1Brown)
+title: 3차시 1:Linear Algebra(3Blue1Brown)
 layout: single
 classes: wide
 categories:

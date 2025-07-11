@@ -1,5 +1,5 @@
 ---
-title: 3차시 2:Linear Algebra(Gilbert Strang)
+title: 4차시 2:Linear Algebra(Gilbert Strang)
 layout: single
 classes: wide
 categories:
